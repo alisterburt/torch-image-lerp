@@ -35,6 +35,7 @@ classifiers = [
 # add your package dependencies here
 dependencies = [
     "torch",
+    "ninja",  # for compilation of custom cuda kernels
     "numpy",
     "einops",
 ]

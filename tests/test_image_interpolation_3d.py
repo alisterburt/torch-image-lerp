@@ -135,7 +135,7 @@ def test_insert_multiple_values_into_multichannel_image_3d_trilinear():
     assert weights.shape == (28, 28, 28)
 
 
-def test_insert_multiple_values_into_multichannel_image_2d_nearest():
+def test_insert_multiple_values_into_multichannel_image_3d_nearest():
     n_channels = 3
     image = torch.zeros((n_channels, 28, 28, 28)).float()
 
@@ -161,7 +161,7 @@ def test_insert_multiple_values_into_multichannel_image_2d_nearest():
     "dtype",
     [torch.float32, torch.float64, torch.complex64, torch.complex128]
 )
-def test_insert_into_image_2d_type_consistency(dtype):
+def test_insert_into_image_3d_type_consistency(dtype):
     image = torch.rand((4, 4, 4), dtype=dtype)
     coords = torch.tensor(np.random.uniform(low=0, high=3, size=(3, 4, 5, 3)))
     values = torch.rand(size=(3, 4, 5), dtype=dtype)

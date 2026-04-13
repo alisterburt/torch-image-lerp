@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 from .grid_sample_utils import array_to_grid_sample
 from torch_image_interpolation import utils
+from torch_image_interpolation.kernels import accumulate
 
 
 def sample_image_3d(
@@ -208,8 +209,8 @@ def _insert_nearest_3d(
     idx_x = einops.rearrange(idx_x, 'b -> b 1')
 
     # insert image data and weights
-    image.index_put_(indices=(idx_c, idx_z, idx_y, idx_x), values=data, accumulate=True)
-    weights.index_put_(indices=(idx_z, idx_y, idx_x), values=w, accumulate=True)
+    accumulate(indices=(idx_c, idx_z, idx_y, idx_x), values=data, out=image)
+    accumulate(indices=(idx_z, idx_y, idx_x), values=w, out=weights)
     return image, weights
 
 
@@ -265,11 +266,21 @@ def _insert_linear_3d(
     # insert weighted data and weight values at each corner
     data = einops.rearrange(data, 'b c -> b c 1 1 1')
     w = einops.rearrange(w, 'b z y x -> b 1 z y x')
-    image.index_put_(
+
+    # ugly shit, thought x, y, z indices where all 1D
+    idx_z = idx_z.view(-1)
+    idx_y = idx_y.view(-1)
+    idx_x = idx_x.view(-1)
+    idx_c = torch.zeros_like(idx_z)
+    data = data * w.to(data.dtype)
+    data = data.view(-1)
+    w = w.view(-1)
+
+    accumulate(
         indices=(idx_c, idx_z, idx_y, idx_x),
-        values=data * w.to(data.dtype),
-        accumulate=True
+        values=data,
+        out=image
     )
-    weights.index_put_(indices=(idx_z, idx_y, idx_x), values=w, accumulate=True)
+    accumulate(indices=(idx_z, idx_y, idx_x), values=w, out=weights)
 
     return image, weights
