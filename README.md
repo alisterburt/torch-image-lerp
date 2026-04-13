@@ -1,3 +1,9 @@
+> [!WARNING]
+> This package has been migrated to the [TeamTomo monorepo](https://github.com/teamtomo/teamtomo).
+> Future development, bug fixes, and releases will happen there.
+> This repository is archived and no longer maintained.
+> This package is still published to and installable from the same PyPI project, but development installations should be made from the monorepo.
+
 # torch-image-interpolation
 
 [![License](https://img.shields.io/pypi/l/torch-image-interpolation.svg?color=green)](https://github.com/teamtomo/torch-image-interpolation/raw/main/LICENSE)
